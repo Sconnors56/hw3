@@ -1,23 +1,19 @@
 class EntriesController < ApplicationController
   def new
-    @place = Place.find(params[:place_id])
-    @entry = @place.entries.build
+    # Render the new entry form
   end
 
   def create
-    @place = Place.find(params[:place_id])
-    @entry = @place.entries.build(entry_params)
-    if @entry.save
-      redirect_to place_path(@place)
-    else
-      render :new
-    end
-  end
+    # Start with a new Entry
+    @entry = Entry.new
+    @entry["title"] = params["title"]
+    @entry["description"] = params["description"]
+    @entry["occurred_on"] = params["occurred_on"] # <-- Ensure this matches schema
+    @entry["place_id"] = params["place_id"]
 
-  private
-
-  def entry_params
-    params.require(:entry).permit(:title, :description, :occurred_on)
+    # Save Entry and redirect user
+    @entry.save
+    redirect_to "/places/#{@entry["place_id"]}"
   end
 end
 
